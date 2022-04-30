@@ -550,7 +550,6 @@ struct ezpp {
   float end_time;
   float base_ar, base_cs, base_od, base_hp;
   int max_combo;
-  int beatmap_id;
   char* title;
   char* title_unicode;
   char* artist;
@@ -850,10 +849,6 @@ int p_metadata(ezpp_t ez, slice_t* line) {
     ez->creator = p_slicedup(ez, &value);
   } else if (!slice_cmp(&name, "Version")) {
     ez->version = p_slicedup(ez, &value);
-  } else if (!slice_cmp(&name, "BeatmapID")) {
-		if (sscanf(value.start, "%d", &ez->beatmap_id) != 1) {
-			return ERR_SYNTAX;
-		}
   }
   return n;
 }
@@ -2257,35 +2252,7 @@ int pp_std(ezpp_t ez) {
     );
   }
 
-  ez->pp *= final_multiplier;
-
-    if (ez->mods & MODS_RX) {
-  	  switch (ez->beatmap_id) {
-		  case 1808605: /* louder than steel nerf (rx only) */
-			  ez->pp *= 0.7f;
-			  break;
-      case 1821147: /* over the top nerf (rx only) */
-      case 1849420: /* mattay ascension to heaven (rx only) */
-        ez->pp *= 0.6f;
-        break;
-		  default:
-			  break;
-		};
-  } else {
-  	  switch (ez->beatmap_id) {
-		  case 1945175: /* keitaro's hidamari no uta nerf (vanilla only - relax pp system already serves this map justice) */
-			  ez->pp *= 0.75f;
-			  break;
-      case 1741498: /* seto's hidamari no uta nerf (vanilla only - relax pp system already serves this map justice) */
-        ez->pp *= 0.75f;
-        break;
-      case 2067473: /* cellina's hidamari no uta (remake ver) nerf (vanilla only - relax pp system already serves this map justice) */
-        ez->pp *= 0.75f;
-        break;
-		  default:
-			  break;
-		};    
-  }
+  ez->pp *= final_multiplier;  
 
   if (ez->mods & MODS_HR) {
       if (ez->mods & MODS_AP) {
